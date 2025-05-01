@@ -2,7 +2,7 @@
 import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { CropDetails, CropsResponse } from "../type/types";
+import { CropsResponse } from "../type/types";
 import { getCrops } from "../services/apiMethod";
 import { useRouter } from "next/navigation";
 import { useDataStore } from "../hooks/stroe";

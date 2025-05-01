@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { login } from "./services/apiMethod";
 import { SESSION_AUTH_TOKEN } from "./utils/constants";
+import { AxiosError } from "axios";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -40,10 +41,12 @@ export default function Login() {
         }, 1500);
         setLoading(false);
       })
-      .catch((error: any) => {
+      .catch((error: AxiosError) => {
+        const message = (error.response?.data as { message: string })?.message;
+
         setMessage({
           type: "error",
-          text: error.response.data.message,
+          text: message || "Something went wrong",
         });
         setLoading(false);
       });
@@ -168,7 +171,7 @@ export default function Login() {
                       Signing in...
                     </span>
                   ) : (
-                    "Sign in"
+                    <span>{"Sign in"}</span>
                   )}
                 </button>
               </div>
@@ -176,7 +179,7 @@ export default function Login() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
+                {"Don't have an account?  "}
                 <Link
                   href="/register"
                   className="font-medium text-green-600 hover:text-green-500">

@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { ChevronLeft, ChevronRight, Filter, Plus, Trash2 } from "lucide-react";
-import { mockCropDetails, mockExpenses, mockIncomes } from "../../lib/mockData";
+import { ChevronLeft, Filter, Plus, Trash2 } from "lucide-react";
 import ExpenseForm from "@/app/components/ExpenseForm";
 import IncomeForm from "@/app/components/IncomeForm";
 import { useDataStore } from "@/app/hooks/stroe";
@@ -22,13 +21,12 @@ import {
   PostExpense,
   PostIncome,
 } from "@/app/type/types";
+import { AxiosError } from "axios";
 
 export default function CropDetails() {
   const router = useRouter();
   const params = useParams();
   const cropId = String(params.id);
-
-  const [crop, setCrop] = useState(null);
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([]);
   const [incomes, setIncomes] = useState<IncomeResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +70,9 @@ export default function CropDetails() {
         console.log(response);
         fetchData();
       })
-      .catch((error: any) => {});
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
   };
 
   const handleDeleteIncome = async (id: string) => {
@@ -82,7 +82,9 @@ export default function CropDetails() {
         console.log(response);
         fetchData();
       })
-      .catch((error: any) => {});
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
   };
 
   const handleAddExpense = (newExpense: PostExpense) => {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { register } from "../services/apiMethod";
+import { AxiosError } from "axios";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -52,10 +53,12 @@ const Register = () => {
         }, 1500);
         setLoading(false);
       })
-      .catch((error: any) => {
+      .catch((error: AxiosError) => {
+        const message = (error.response?.data as { message: string })?.message;
+
         setMessage({
           type: "error",
-          text: error.response.data.message,
+          text: message || "Something went wrong",
         });
         setLoading(false);
       });

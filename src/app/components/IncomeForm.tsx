@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, useState } from "react";
-import { PostExpense, PostIncome } from "../type/types";
+import { PostIncome } from "../type/types";
 interface IncomeFormProps {
   cropId: string;
   onCancel: () => void;
@@ -122,7 +122,7 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
             Cancel
           </button>
           <button type="submit" className="btn btn-primary">
-            "Add Income"
+            Add Income
           </button>
         </div>
       </form>

@@ -1,6 +1,4 @@
-// app/not-found.jsx
 import Link from "next/link";
-import Image from "next/image";
 
 export default function NotFound() {
   return (
@@ -11,7 +9,7 @@ export default function NotFound() {
           Page Not Found
         </h2>
         <p className="text-gray-600 mb-8">
-          Oops! The page you're looking for seems to have been harvested.
+          Oops! The page you&apos;re looking for seems to have been harvested.
         </p>
 
         <div className="flex justify-center space-x-4">

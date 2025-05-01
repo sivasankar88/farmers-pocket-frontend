@@ -54,5 +54,5 @@ export interface PostIncome {
   quantity: number;
   amount: number;
   date: string;
-  notes: String;
+  notes: string;
 }

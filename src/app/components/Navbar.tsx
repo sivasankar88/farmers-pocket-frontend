@@ -14,7 +14,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
             <span className="text-xl font-bold text-green-600">
-              Farmer's Pocket
+              Farmer&apos;s Pocket
             </span>
           </Link>
           <nav className="hidden md:flex space-x-4">
