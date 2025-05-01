@@ -26,7 +26,7 @@ const Crop = () => {
   });
   useEffect(() => {
     fetchCrops();
-  }, []);
+  });
   const fetchCrops = () => {
     getCrops(filters.fromDate, filters.toDate).then((response) => {
       setCrops(response);
