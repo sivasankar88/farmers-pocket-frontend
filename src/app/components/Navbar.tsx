@@ -1,0 +1,77 @@
+"use client";
+import { CircleX, SquareMenu } from "lucide-react";
+import Link from "next/link";
+import React, { useState } from "react";
+
+const Navbar = () => {
+  const [showMenu, toggleMeun] = useState(false);
+  const handleLogout = () => {
+    localStorage.clear();
+  };
+  return (
+    <header className="bg-white shadow">
+      <div className="container mx-auto px-x">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="flex items-center">
+            <span className="text-xl font-bold text-green-600">
+              Farmer's Pocket
+            </span>
+          </Link>
+          <nav className="hidden md:flex space-x-4">
+            <Link
+              href="/crops"
+              className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+              Dashboard
+            </Link>
+            <Link
+              href="/crops/add"
+              className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+              Add Crop
+            </Link>
+            <Link
+              href="/"
+              className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100"
+              onClick={handleLogout}>
+              Logout
+            </Link>
+          </nav>
+          <div className="md:hidden">
+            <button
+              className="btn hover:cursor-pointer"
+              onClick={() => toggleMeun(!showMenu)}>
+              {!showMenu ? (
+                <SquareMenu size={25} className="text-green-600" />
+              ) : (
+                <CircleX size={25} className="text-green-600" />
+              )}
+            </button>
+            {showMenu && (
+              <div className="absolute md:hidden top-16 right-2 z-10 bg-white shadow rounded-b-xl py-2 w-30 ">
+                <div className="flex flex-col">
+                  <Link
+                    href="/crops"
+                    className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/crops/add"
+                    className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+                    Add Crop
+                  </Link>
+                  <Link
+                    href="/"
+                    className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100"
+                    onClick={handleLogout}>
+                    Logout
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Navbar;
