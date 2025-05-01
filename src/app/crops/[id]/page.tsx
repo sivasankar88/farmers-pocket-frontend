@@ -43,7 +43,7 @@ export default function CropDetails() {
   useEffect(() => {
     setLoading(true);
     fetchData();
-  });
+  }, []);
   const fetchData = () => {
     getExpenses(cropId, filters.fromDate, filters.toDate).then((response) => {
       setExpenses(response);
