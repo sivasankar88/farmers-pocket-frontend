@@ -2,7 +2,7 @@ import axios from "axios";
 import Router from "next/router";
 
 export const apiClient = axios.create({
-  baseURL: "http://192.168.136.130:5000/api/",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
