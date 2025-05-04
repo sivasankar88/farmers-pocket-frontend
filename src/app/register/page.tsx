@@ -69,7 +69,7 @@ const Register = () => {
       <div className="hidden md:flex md:w-1/2 bg-green-50 items-center justify-center p-10">
         <div className="max-w-md">
           <Image
-            src="/farming.jpg"
+            src="/farmer.jpeg"
             alt="Farming Tractor"
             width={500}
             height={400}
@@ -88,7 +88,7 @@ const Register = () => {
         <div className="w-full max-w-md">
           <div className="md:hidden flex flex-col items-center mb-8">
             <Image
-              src="/farming.jpg"
+              src="/farmer.jpeg"
               alt="Farming Tractor"
               width={200}
               height={160}
