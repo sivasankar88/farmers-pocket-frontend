@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import { ChevronLeft, Filter, Plus, Trash2 } from "lucide-react";
 import ExpenseForm from "@/app/components/ExpenseForm";
 import IncomeForm from "@/app/components/IncomeForm";
-import { useDataStore } from "@/app/hooks/stroe";
 import {
   deleteExpense,
   deleteIncome,

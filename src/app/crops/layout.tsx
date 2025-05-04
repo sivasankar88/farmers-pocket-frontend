@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import { time } from "console";
 import { SESSION_AUTH_TOKEN } from "../utils/constants";
 
 interface JWTPayload {
@@ -32,7 +31,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }, timeout);
       setIsValid(true);
       return () => clearTimeout(timer);
-    } catch (err) {
+    } catch (error) {
+      console.log(error);
       router.push("/");
     }
   }, []);
