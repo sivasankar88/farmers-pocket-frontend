@@ -29,12 +29,13 @@ export const register = async (body = {}): Promise<Response> => {
 
 export const getCrops = async (
   fromDate: string,
-  toDate: string
+  toDate: string,
+  cropId?: string
 ): Promise<CropsResponse[]> => {
   try {
-    const res = await apiClient.get(
-      `/crops?fromDate=${fromDate}&toDate=${toDate}`
-    );
+    let url = `/crops?fromDate=${fromDate}&toDate=${toDate}`;
+    if (cropId) url += `&cropId=${cropId}`;
+    const res = await apiClient.get(url);
     return res.data as CropsResponse[];
   } catch (error) {
     throw error;

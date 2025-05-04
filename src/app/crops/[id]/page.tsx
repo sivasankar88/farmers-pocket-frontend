@@ -10,18 +10,21 @@ import { useDataStore } from "@/app/hooks/stroe";
 import {
   deleteExpense,
   deleteIncome,
+  getCrops,
   getExpenses,
   getIncomes,
   postExpense,
   postIncome,
 } from "@/app/services/apiMethod";
 import {
+  CropsResponse,
   ExpenseResponse,
   IncomeResponse,
   PostExpense,
   PostIncome,
 } from "@/app/type/types";
 import { AxiosError } from "axios";
+import DeletePopup from "@/app/components/DeletePopup";
 
 export default function CropDetails() {
   const router = useRouter();
@@ -38,13 +41,19 @@ export default function CropDetails() {
     sort: "date-desc",
   });
   const [showFilters, setShowFilters] = useState(false);
-  const cropsSummary = useDataStore().data;
-  console.log(cropsSummary);
+  const [cropSummary, setCropSummary] = useState<CropsResponse[]>([]);
+  const [deleteState, setDeleteState] = useState({
+    id: "",
+    showPopup: false,
+  });
   useEffect(() => {
     setLoading(true);
     fetchData();
   }, []);
   const fetchData = () => {
+    getCrops(filters.fromDate, filters.toDate, cropId).then((response) => {
+      setCropSummary(response);
+    });
     getExpenses(cropId, filters.fromDate, filters.toDate).then((response) => {
       setExpenses(response);
       setLoading(false);
@@ -64,7 +73,6 @@ export default function CropDetails() {
   };
 
   const handleDeleteExpense = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this expense?")) return;
     deleteExpense(id)
       .then((response) => {
         console.log(response);
@@ -73,10 +81,10 @@ export default function CropDetails() {
       .catch((error: AxiosError) => {
         console.log(error);
       });
+    setDeleteState({ id: "", showPopup: false });
   };
 
   const handleDeleteIncome = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this income?")) return;
     deleteIncome(id)
       .then((response) => {
         console.log(response);
@@ -85,6 +93,7 @@ export default function CropDetails() {
       .catch((error: AxiosError) => {
         console.log(error);
       });
+    setDeleteState({ id: "", showPopup: false });
   };
 
   const handleAddExpense = (newExpense: PostExpense) => {
@@ -127,24 +136,24 @@ export default function CropDetails() {
           </button>
         </div>
 
-        {cropsSummary && (
+        {cropSummary[0] && (
           <div className="card mb-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
               <div>
-                <h1 className="text-2xl font-bold">{cropsSummary.name}</h1>
-                <p className="text-gray-600">{cropsSummary.acres} acres</p>
+                <h1 className="text-2xl font-bold">{cropSummary[0].name}</h1>
+                <p className="text-gray-600">{cropSummary[0].acre} acres</p>
               </div>
               <div className="mt-4 md:mt-0">
                 <div className="flex items-center gap-2 text-lg">
                   <span className="font-medium">Profit:</span>
                   <span
                     className={
-                      cropsSummary.profit >= 0
+                      cropSummary[0].profit >= 0
                         ? "text-green-600 font-bold"
                         : "text-red-600 font-bold"
                     }>
-                    {cropsSummary.profit}
-                    {cropsSummary.profit < 0 && " (Loss)"}
+                    {cropSummary[0].profit}
+                    {cropSummary[0].profit < 0 && " (Loss)"}
                   </span>
                 </div>
               </div>
@@ -154,25 +163,25 @@ export default function CropDetails() {
               <div className="bg-gray-50 p-4 rounded-md">
                 <h3 className="text-gray-600 mb-1">Total Income</h3>
                 <p className="text-xl font-bold text-green-600">
-                  {cropsSummary.totalIncome.toFixed(2)}
+                  {cropSummary[0].incomeAmount}
                 </p>
               </div>
               <div className="bg-gray-50 p-4 rounded-md">
                 <h3 className="text-gray-600 mb-1">Total Expenses</h3>
                 <p className="text-xl font-bold text-red-600">
-                  {cropsSummary.totalExpense.toFixed(2)}
+                  {cropSummary[0].expenseAmount}
                 </p>
               </div>
               <div className="bg-gray-50 p-4 rounded-md">
                 <h3 className="text-gray-600 mb-1">Profit per Acre</h3>
                 <p
                   className={`text-xl font-bold ${
-                    cropsSummary.profitPerAcres >= 0
+                    cropSummary[0].profit / cropSummary[0].acre >= 0
                       ? "text-green-600"
                       : "text-red-600"
                   }`}>
-                  {cropsSummary.profitPerAcres}
-                  {cropsSummary.profitPerAcres < 0 && " (Loss)"}
+                  {cropSummary[0].profit / cropSummary[0].acre}
+                  {cropSummary[0].profit / cropSummary[0].acre < 0 && " (Loss)"}
                 </p>
               </div>
             </div>
@@ -320,7 +329,12 @@ export default function CropDetails() {
                         <td className="px-6 py-4">{expense.notes || "-"}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <button
-                            onClick={() => handleDeleteExpense(expense.id)}
+                            onClick={() =>
+                              setDeleteState({
+                                id: expense.id,
+                                showPopup: true,
+                              })
+                            }
                             className="text-red-600 hover:text-red-900 cursor-pointer">
                             <Trash2 size={18} />
                           </button>
@@ -379,7 +393,12 @@ export default function CropDetails() {
                         <td className="px-6 py-4">{income.notes || "-"}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <button
-                            onClick={() => handleDeleteIncome(income.id)}
+                            onClick={() =>
+                              setDeleteState({
+                                id: income.id,
+                                showPopup: true,
+                              })
+                            }
                             className="text-red-600 hover:text-red-900 cursor-pointer">
                             <Trash2 size={18} />
                           </button>
@@ -393,6 +412,15 @@ export default function CropDetails() {
           )}
         </div>
       </div>
+      {deleteState.showPopup && (
+        <DeletePopup
+          setDeletePopup={() => setDeleteState({ id: "", showPopup: false })}
+          handleDeleteConfirm={() => {
+            if (activeTab === "expenses") handleDeleteExpense(deleteState.id);
+            else handleDeleteIncome(deleteState.id);
+          }}
+        />
+      )}
     </div>
   );
 }
