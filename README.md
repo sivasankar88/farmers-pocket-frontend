@@ -1,4 +1,4 @@
- # Farmer Expense Management - Frontend (Next.js)
+ # Farmer's Pocket - Frontend (Next.js)
 
 This is the frontend of the Farmer's Pocket System built with *Next.js*. It allows farmers to register, log in, and manage crops and financial data via an intuitive user interface.
 
