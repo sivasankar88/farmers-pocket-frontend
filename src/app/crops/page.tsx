@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { CropsResponse } from "../type/types";
 import { getCrops } from "../services/apiMethod";
 import { useRouter } from "next/navigation";
-import { useDataStore } from "../hooks/stroe";
 const Crop = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [crops, setCrops] = useState<CropsResponse[]>([]);
@@ -15,7 +14,6 @@ const Crop = () => {
   const router = useRouter();
   const today = new Date();
   const lastYear = new Date();
-  const setData = useDataStore((state) => state.setData);
   lastYear.setFullYear(today.getFullYear() - 1);
   const formatDate = (date: Date) => {
     return date.toISOString().split("T")[0];
@@ -45,19 +43,7 @@ const Crop = () => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
   };
-  const storeData = (crop: CropsResponse) => {
-    const profitPerAcre = crop.profit / crop.acre;
-    setData({
-      id: crop.id,
-      name: crop.name,
-      acres: crop.acre,
-      totalIncome: crop.incomeAmount,
-      totalExpense: crop.expenseAmount,
-      profit: crop.profit,
-      profitPerAcres: profitPerAcre,
-    });
-    router.push(`/crops/${crop.id}`);
-  };
+
   const paginatedCrops = crops.slice((currentPage - 1) * 5, currentPage * 5);
   return (
     <div className="container mx-auto px-4 py-8">
@@ -183,7 +169,7 @@ const Crop = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <button
                             className="text-green-600 hover:text-green-900 font-medium cursor-pointer"
-                            onClick={() => storeData(crop)}>
+                            onClick={() => router.push(`/crops/${crop.id}`)}>
                             View Details
                           </button>
                         </td>
