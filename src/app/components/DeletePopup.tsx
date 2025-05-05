@@ -42,17 +42,17 @@ const DeletePopup: React.FC<DeletePopupInterface> = ({
               </div>
             </div>
 
-            <div className="px-4 py-3 flex justify-center gap-1">
+            <div className="px-4 py-3 flex justify-center gap-5">
               <button
                 onClick={() => setDeletePopup(false)}
                 type="button"
-                className="btn btn-primary cursor-pointer mt-3 inline-flex w-full justify-center rounded-3xl  px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset  sm:mt-0 sm:w-auto">
+                className="btn btn-primary">
                 Cancel
               </button>
               <button
                 onClick={handleDeleteConfirm}
                 type="button"
-                className="btn text-white cursor-pointer inline-flex w-full justify-center rounded-3xl bg-red-500 px-3 py-2 text-sm font-semibold shadow-xs hover:bg-red-700 sm:ml-3 sm:w-auto">
+                className="btn btn-danger">
                 Delete
               </button>
             </div>

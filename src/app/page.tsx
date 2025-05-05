@@ -15,7 +15,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const router = useRouter();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -37,7 +36,7 @@ export default function Login() {
         localStorage.setItem(SESSION_AUTH_TOKEN, response.token);
         setTimeout(() => {
           router.push("/crops");
-        }, 1500);
+        }, 500);
         setLoading(false);
       })
       .catch((error: AxiosError) => {

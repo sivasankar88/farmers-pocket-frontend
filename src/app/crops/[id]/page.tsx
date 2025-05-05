@@ -309,7 +309,7 @@ export default function CropDetails() {
                         Notes
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
+                        Delete
                       </th>
                     </tr>
                   </thead>
@@ -370,7 +370,7 @@ export default function CropDetails() {
                         Notes
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
+                        Delete
                       </th>
                     </tr>
                   </thead>

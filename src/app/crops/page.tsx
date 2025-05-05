@@ -1,14 +1,20 @@
 "use client";
-import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { CropsResponse } from "../type/types";
-import { getCrops } from "../services/apiMethod";
+import { deleteCrop, getCrops } from "../services/apiMethod";
 import { useRouter } from "next/navigation";
+import DeletePopup from "../components/DeletePopup";
+import { AxiosError } from "axios";
 const Crop = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [crops, setCrops] = useState<CropsResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteState, setDeleteState] = useState({
+    id: "",
+    showPopup: false,
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const router = useRouter();
@@ -31,6 +37,16 @@ const Crop = () => {
       setLoading(false);
       setTotalPages(Math.ceil(response.length / 5));
     });
+  };
+  const handleCropDelete = () => {
+    deleteCrop(deleteState.id)
+      .then((response) => {
+        fetchCrops();
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
+    setDeleteState({ id: "", showPopup: false });
   };
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -135,8 +151,11 @@ const Crop = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Profit
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Action
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Delete
                       </th>
                     </tr>
                   </thead>
@@ -166,11 +185,23 @@ const Crop = () => {
                             {crop.profit < 0 && " (Loss)"}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <button
                             className="text-green-600 hover:text-green-900 font-medium cursor-pointer"
                             onClick={() => router.push(`/crops/${crop.id}`)}>
                             View Details
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                          <button
+                            onClick={() =>
+                              setDeleteState({
+                                id: crop.id,
+                                showPopup: true,
+                              })
+                            }
+                            className="text-red-600 hover:text-red-900 cursor-pointer">
+                            <Trash2 size={18} />
                           </button>
                         </td>
                       </tr>
@@ -199,6 +230,14 @@ const Crop = () => {
                 </button>
               </nav>
             </div>
+          )}
+          {deleteState.showPopup && (
+            <DeletePopup
+              setDeletePopup={() =>
+                setDeleteState({ id: "", showPopup: false })
+              }
+              handleDeleteConfirm={handleCropDelete}
+            />
           )}
         </>
       )}

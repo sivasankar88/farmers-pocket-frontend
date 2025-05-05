@@ -51,6 +51,15 @@ export const postCrops = async (body = {}): Promise<Response> => {
   }
 };
 
+export const deleteCrop = async (id: string): Promise<Response> => {
+  try {
+    const res = await apiClient.delete(`/crops/${id}`);
+    return res.data as Response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getExpenses = async (
   id: string,
   fromDate?: string,
