@@ -50,18 +50,22 @@ export default function CropDetails() {
     fetchData();
   }, []);
   const fetchData = () => {
-    getCrops(filters.fromDate, filters.toDate, cropId).then((response) => {
-      setCropSummary(response);
+  setLoading(true); // Start loader
+
+  const cropPromise = getCrops(filters.fromDate, filters.toDate, cropId);
+  const expensePromise = getExpenses(cropId, filters.fromDate, filters.toDate);
+  const incomePromise = getIncomes(cropId, filters.fromDate, filters.toDate);
+
+  Promise.all([cropPromise, expensePromise, incomePromise])
+    .then(([cropData, expenseData, incomeData]) => {
+      setCropSummary(cropData);
+      setExpenses(expenseData);
+      setIncomes(incomeData);
+    })
+    .finally(() => {
+      setLoading(false); // End loader after all promises resolve or reject
     });
-    getExpenses(cropId, filters.fromDate, filters.toDate).then((response) => {
-      setExpenses(response);
-      setLoading(false);
-    });
-    getIncomes(cropId, filters.fromDate, filters.toDate).then((response) => {
-      setIncomes(response);
-      setLoading(false);
-    });
-  };
+};
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
