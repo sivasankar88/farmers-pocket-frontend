@@ -183,8 +183,10 @@ export default function CropDetails() {
                       ? "text-green-600"
                       : "text-red-600"
                   }`}>
-                  {cropSummary[0].profit / cropSummary[0].acre}
-                  {cropSummary[0].profit / cropSummary[0].acre < 0 && " (Loss)"}
+                  {(cropSummary[0].profit / cropSummary[0].acre).toFixed(2)}
+                  {Number(
+                    (cropSummary[0].profit / cropSummary[0].acre).toFixed(2)
+                  ) < 0 && " (Loss)"}
                 </p>
               </div>
             </div>
