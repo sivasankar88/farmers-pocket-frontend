@@ -18,6 +18,12 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
     quantity: "",
     amount: "",
   });
+  const validateFormData = (quantity: string, amount: string) => {
+    const newError = { quantity: "", amount: "" };
+    if (!quantity.trim()) newError.quantity = "Enter the quantity of sales";
+    if (!amount.trim()) newError.amount = "Enter the price per unit";
+    return newError;
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) => {
@@ -30,7 +36,13 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError({ quantity: "", amount: "" });
+    const validationErrors = validateFormData(
+      formData.quantity,
+      formData.amount
+    );
+    setError(validationErrors);
+    const hasErrors = Object.values(validationErrors).some(Boolean);
+    if (hasErrors) return;
     const newIncome: PostIncome = {
       cropId: cropId,
       ...formData,
@@ -61,8 +73,10 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
               onChange={handleChange}
               min="0.01"
               step="0.01"
-              required
             />
+            {error.quantity && (
+              <p className="text-red-500 text-sm mt-1">{error.quantity}</p>
+            )}
           </div>
 
           <div>
@@ -76,8 +90,10 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
               className="form-input"
               value={formData.amount}
               onChange={handleChange}
-              required
             />
+            {error.amount && (
+              <p className="text-red-500 text-sm mt-1">{error.amount}</p>
+            )}
           </div>
 
           <div>

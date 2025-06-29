@@ -29,8 +29,16 @@ export default function ExpenseForm({
     amount: "",
     notes: "",
   });
-  const [error, setError] = useState("");
-
+  const [error, setError] = useState({
+    type: "",
+    amount: "",
+  });
+  const validateFormData = (type: string, amount: string) => {
+    const newError = { type: "", amount: "" };
+    if (!type.trim()) newError.type = "Select the type of expense";
+    if (!amount.trim()) newError.amount = "Enter the expense amount";
+    return newError;
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) => {
@@ -43,7 +51,10 @@ export default function ExpenseForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    const validationErrors = validateFormData(formData.type, formData.amount);
+    setError(validationErrors);
+    const hasErrors = Object.values(validationErrors).some(Boolean);
+    if (hasErrors) return;
     const newExpense: PostExpense = {
       cropId: cropId,
       ...formData,
@@ -58,12 +69,6 @@ export default function ExpenseForm({
     <div className="bg-gray-50 p-4 rounded-md mb-6">
       <h3 className="mb-4">Add New Expense</h3>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
@@ -75,8 +80,7 @@ export default function ExpenseForm({
               name="type"
               className="form-select"
               value={formData.type}
-              onChange={handleChange}
-              required>
+              onChange={handleChange}>
               <option value="">Select expense type</option>
               {expenseTypes.map((type) => (
                 <option key={type} value={type}>
@@ -84,6 +88,9 @@ export default function ExpenseForm({
                 </option>
               ))}
             </select>
+            {error.type && (
+              <p className="text-red-500 text-sm mt-1">{error.type}</p>
+            )}
           </div>
 
           <div>
@@ -101,7 +108,7 @@ export default function ExpenseForm({
             />
           </div>
 
-          <div>
+          <div className="flex flex-col">
             <label htmlFor="amount" className="form-label">
               Amount
             </label>
@@ -112,8 +119,10 @@ export default function ExpenseForm({
               className="form-input"
               value={formData.amount}
               onChange={handleChange}
-              required
             />
+            {error.amount && (
+              <p className="text-red-500 text-sm mt-1">{error.amount}</p>
+            )}
           </div>
 
           <div>
