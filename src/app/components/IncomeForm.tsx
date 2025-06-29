@@ -14,8 +14,10 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
     date: new Date().toISOString().split("T")[0],
     notes: "",
   });
-  const [error, setError] = useState("");
-
+  const [error, setError] = useState({
+    quantity: "",
+    amount: "",
+  });
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) => {
@@ -28,7 +30,7 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    setError({ quantity: "", amount: "" });
     const newIncome: PostIncome = {
       cropId: cropId,
       ...formData,
@@ -43,12 +45,6 @@ const IncomeForm = ({ cropId, onCancel, onSubmit }: IncomeFormProps) => {
   return (
     <div className="bg-gray-50 p-4 rounded-md mb-6">
       <h3 className="mb-4">Add New Income</h3>
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

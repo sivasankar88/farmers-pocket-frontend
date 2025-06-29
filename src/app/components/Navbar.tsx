@@ -2,11 +2,15 @@
 import { CircleX, SquareMenu } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
-
+import LogoutPopup from "./LogoutPopup";
+import { useRouter } from "next/navigation";
 const Navbar = () => {
   const [showMenu, toggleMeun] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const router = useRouter();
   const handleLogout = () => {
     localStorage.clear();
+    router.push("/");
   };
   return (
     <header className="bg-white shadow">
@@ -28,12 +32,13 @@ const Navbar = () => {
               className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
               Add Crop
             </Link>
-            <Link
-              href="/"
-              className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100"
-              onClick={handleLogout}>
+            <button
+              className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+              onClick={() => {
+                setShowPopup(true);
+              }}>
               Logout
-            </Link>
+            </button>
           </nav>
           <div className="md:hidden">
             <button
@@ -58,18 +63,25 @@ const Navbar = () => {
                     className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
                     Add Crop
                   </Link>
-                  <Link
-                    href="/"
-                    className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100"
-                    onClick={handleLogout}>
+                  <button
+                    className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setShowPopup(true);
+                    }}>
                     Logout
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
+      {showPopup && (
+        <LogoutPopup
+          setLogoutPopup={() => setShowPopup(false)}
+          handleLogoutConfirm={handleLogout}
+        />
+      )}
     </header>
   );
 };

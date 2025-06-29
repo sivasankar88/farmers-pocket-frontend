@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,6 +6,7 @@ import Image from "next/image";
 import { login } from "./services/apiMethod";
 import { SESSION_AUTH_TOKEN } from "./utils/constants";
 import { AxiosError } from "axios";
+
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -14,19 +14,58 @@ export default function Login() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
   const router = useRouter();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    const errorMessages = { email: "", password: "" };
+
+    if (!formData.email) {
+      errorMessages.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errorMessages.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    if (!formData.password) {
+      errorMessages.password = "Password is required";
+      isValid = false;
+    }
+    setErrors(errorMessages);
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      setMessage({
+        type: "error",
+        text: "Please fill the mandatory fields correctly.",
+      });
+      return;
+    }
+
     setLoading(true);
     setMessage({ type: "", text: "" });
+
     login(formData)
       .then((response) => {
         setMessage({
@@ -41,7 +80,6 @@ export default function Login() {
       })
       .catch((error: AxiosError) => {
         const message = (error.response?.data as { message: string })?.message;
-
         setMessage({
           type: "error",
           text: message || "Something went wrong",
@@ -51,7 +89,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
+    <div className="min-h-screen flex flex-col md:flex-row bg-green-50">
       <div className="hidden md:flex md:w-1/2 bg-green-50 items-center justify-center p-10">
         <div className="max-w-md">
           <Image
@@ -115,12 +153,16 @@ export default function Login() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="your@email.com"
                   value={formData.email}
                   onChange={handleChange}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div>
@@ -134,12 +176,16 @@ export default function Login() {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
 
               <div>

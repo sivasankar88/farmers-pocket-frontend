@@ -16,6 +16,12 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,18 +30,58 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    const errorMessage = {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    };
+    if (!formData.name) {
+      errorMessage.name = "Name is required";
+      isValid = false;
+    }
+    if (!formData.email) {
+      errorMessage.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errorMessage.email = "Please enter a valid email address";
+      isValid = false;
+    }
+    if (!formData.password) {
+      errorMessage.password = "Password is required";
+      isValid = false;
+    } else if (formData.password.length < 6) {
+      errorMessage.password = "Password must be at least 6 characters";
+      isValid = false;
+    }
+    if (!formData.confirmPassword) {
+      errorMessage.confirmPassword = "Confirm password is required";
+      isValid = false;
+    }
+    setErrors(errorMessage);
+    return isValid;
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setMessage({ type: "error", text: "Passwords do not match" });
-      return;
-    }
-    if (formData.password.length < 6) {
+    if (!validateForm()) {
       setMessage({
         type: "error",
-        text: "Password must be at least 6 characters",
+        text: "Please fill the mandatory field correctly.",
+      });
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setMessage({
+        type: "error",
+        text: "Password and confirm password are not matching",
       });
       return;
     }
@@ -65,7 +111,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
+    <div className="min-h-screen flex flex-col md:flex-row bg-green-50">
       <div className="hidden md:flex md:w-1/2 bg-green-50 items-center justify-center p-10">
         <div className="max-w-md">
           <Image
@@ -128,12 +174,15 @@ const Register = () => {
                   name="name"
                   type="text"
                   autoComplete="name"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black 
+                    ${errors.name ? "border-red-500" : "border-gray-300"}`}
                   placeholder="farmer's name"
                   value={formData.name}
                   onChange={handleChange}
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
               </div>
 
               <div>
@@ -145,14 +194,17 @@ const Register = () => {
                 <input
                   id="email"
                   name="email"
-                  type="email"
+                  type="text"
                   autoComplete="email"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black 
+      ${errors.email ? "border-red-500" : "border-gray-300"}`}
                   placeholder="farmer@email.com"
                   value={formData.email}
                   onChange={handleChange}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div>
@@ -166,12 +218,15 @@ const Register = () => {
                   name="password"
                   type="password"
                   autoComplete="new-password"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black 
+      ${errors.password ? "border-red-500" : "border-gray-300"}`}
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
                 <p className="mt-1 text-xs text-gray-500">
                   Password must be at least 6 characters
                 </p>
@@ -188,12 +243,17 @@ const Register = () => {
                   name="confirmPassword"
                   type="password"
                   autoComplete="new-password"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black 
+      ${errors.confirmPassword ? "border-red-500" : "border-gray-300"}`}
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                 />
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </div>
 
               <div className="pt-2">
