@@ -16,7 +16,7 @@ const Navbar = () => {
     <header className="bg-white shadow">
       <div className="container mx-auto px-x">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center">
+          <Link href="/crops" className="flex items-center">
             <span className="text-xl font-bold text-green-600">
               Farmer&apos;s Pocket
             </span>

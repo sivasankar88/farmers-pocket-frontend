@@ -27,7 +27,6 @@ apiClient.interceptors.response.use(
     console.log(error);
     if (typeof window != undefined) {
       if (error.status === 401) {
-        console.log("inside");
         localStorage.clear();
         Router.push("/");
         return Promise.reject(error);
