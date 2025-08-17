@@ -4,9 +4,14 @@ This is the frontend of the **Farmer's Pocket System** built with **Next.js**. I
 
 ---
 
+## 📚 API Documentation
+
+The backend API is fully documented with Swagger.
+
 You can explore the available endpoints here:  
 ➡️ **[Swagger UI - Farmer's Pocket API](https://farmesr-s-pocket-backend.onrender.com/api-docs/#/)**
 
+---
 
 ## ✨ Features
 
@@ -40,3 +45,4 @@ git clone https://github.com/sivasankar88/farmers-pocket-frontend.git
 cd farmers-pocket-frontend
 npm install
 npm run dev
+```
