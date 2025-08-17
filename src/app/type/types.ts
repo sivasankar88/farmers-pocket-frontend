@@ -7,6 +7,13 @@ export interface Response {
 }
 
 export interface CropsResponse {
+  currentPage: number;
+  totalPages: number;
+  totalRecords: number;
+  data: CropsData[];
+}
+
+export interface CropsData {
   id: string;
   name: string;
   acre: number;
@@ -15,17 +22,14 @@ export interface CropsResponse {
   profit: number;
 }
 
-export interface CropDetails {
-  id: string;
-  name: string;
-  acres: number;
-  totalIncome: number;
-  totalExpense: number;
-  profit: number;
-  profitPerAcres: number;
+export interface ExpenseResponse {
+  currentPage: number;
+  totalPages: number;
+  totalRecords: number;
+  data: ExpenseData[];
 }
 
-export interface ExpenseResponse {
+export interface ExpenseData {
   id: string;
   type: string;
   date: Date;
@@ -42,6 +46,13 @@ export interface PostExpense {
 }
 
 export interface IncomeResponse {
+  currentPage: number;
+  totalPages: number;
+  totalRecords: number;
+  data: IncomeData[];
+}
+
+export interface IncomeData {
   id: string;
   date: string;
   quantity: number;

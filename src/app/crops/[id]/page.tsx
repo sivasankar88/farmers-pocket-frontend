@@ -16,23 +16,28 @@ import {
   postIncome,
 } from "@/app/services/apiMethod";
 import {
-  CropsResponse,
-  ExpenseResponse,
-  IncomeResponse,
+  CropsData,
+  ExpenseData,
+  IncomeData,
   PostExpense,
   PostIncome,
 } from "@/app/type/types";
 import { AxiosError } from "axios";
 import DeletePopup from "@/app/components/DeletePopup";
+import Pagination from "@/app/components/Pagination";
 
 export default function CropDetails() {
   const router = useRouter();
   const params = useParams();
   const cropId = String(params.id);
-  const [expenses, setExpenses] = useState<ExpenseResponse[]>([]);
-  const [incomes, setIncomes] = useState<IncomeResponse[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseData[]>([]);
+  const [incomes, setIncomes] = useState<IncomeData[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("expenses");
+  const [currentPageOfExpense, setCurrentPageForExpense] = useState(1);
+  const [totalPageOfExpense, setTotalPageForExpense] = useState(1);
+  const [currentPageOfIncome, setCurrentPageForIncome] = useState(1);
+  const [totalPageOfIncome, setTotalPageForIncome] = useState(1);
   const [showForm, setShowForm] = useState(false);
   const [filters, setFilters] = useState({
     fromDate: "",
@@ -40,32 +45,64 @@ export default function CropDetails() {
     sort: "date-desc",
   });
   const [showFilters, setShowFilters] = useState(false);
-  const [cropSummary, setCropSummary] = useState<CropsResponse[]>([]);
+  const [cropSummary, setCropSummary] = useState<CropsData[]>([]);
   const [deleteState, setDeleteState] = useState({
     id: "",
     showPopup: false,
   });
   useEffect(() => {
     setLoading(true);
-    fetchData();
+    fetchCrops();
   }, []);
-  const fetchData = () => {
-  setLoading(true); // Start loader
 
-  const cropPromise = getCrops(filters.fromDate, filters.toDate, cropId);
-  const expensePromise = getExpenses(cropId, filters.fromDate, filters.toDate);
-  const incomePromise = getIncomes(cropId, filters.fromDate, filters.toDate);
+  useEffect(() => {
+    if (activeTab == "expenses") fetchExpense();
+    else fetchIncome();
+  }, [activeTab, currentPageOfExpense, currentPageOfIncome]);
 
-  Promise.all([cropPromise, expensePromise, incomePromise])
-    .then(([cropData, expenseData, incomeData]) => {
-      setCropSummary(cropData);
-      setExpenses(expenseData);
-      setIncomes(incomeData);
-    })
-    .finally(() => {
-      setLoading(false); // End loader after all promises resolve or reject
+  const fetchCrops = () => {
+    getCrops(filters.fromDate, filters.toDate, 1, cropId).then((response) => {
+      setCropSummary(response.data);
     });
-};
+  };
+
+  const fetchExpense = () => {
+    setLoading(true);
+    getExpenses(
+      cropId,
+      filters.fromDate,
+      filters.toDate,
+      currentPageOfExpense
+    ).then((response) => {
+      setExpenses(response.data);
+      setTotalPageForExpense(response.totalPages);
+      setLoading(false);
+    });
+  };
+
+  const fetchIncome = () => {
+    setLoading(false);
+    getIncomes(
+      cropId,
+      filters.fromDate,
+      filters.toDate,
+      currentPageOfIncome
+    ).then((response) => {
+      setIncomes(response.data);
+      setTotalPageForIncome(response.totalPages);
+      setLoading(false);
+    });
+  };
+
+  const handlePageChange = (page: number) => {
+    if (activeTab == "expenses") {
+      if (page < 1 || page > totalPageOfExpense) return;
+      setCurrentPageForExpense(page);
+    } else {
+      if (page < 1 || page > totalPageOfIncome) return;
+      setCurrentPageForIncome(page);
+    }
+  };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -79,7 +116,8 @@ export default function CropDetails() {
     deleteExpense(id)
       .then((response) => {
         console.log(response);
-        fetchData();
+        fetchCrops();
+        fetchExpense();
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -91,7 +129,8 @@ export default function CropDetails() {
     deleteIncome(id)
       .then((response) => {
         console.log(response);
-        fetchData();
+        fetchCrops();
+        fetchIncome();
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -102,7 +141,8 @@ export default function CropDetails() {
   const handleAddExpense = (newExpense: PostExpense) => {
     postExpense(newExpense).then((response) => {
       console.log(response);
-      fetchData();
+      fetchCrops();
+      fetchExpense();
       setShowForm(false);
     });
   };
@@ -110,7 +150,8 @@ export default function CropDetails() {
   const handleAddIncome = (newIncome: PostIncome) => {
     postIncome(newIncome).then((response) => {
       console.log(response);
-      fetchData();
+      fetchCrops();
+      fetchIncome();
       setShowForm(false);
     });
   };
@@ -268,7 +309,12 @@ export default function CropDetails() {
                   </div>
                 </div>
                 <div className="flex md:h-10">
-                  <button className="btn btn-primary" onClick={fetchData}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      fetchCrops();
+                      activeTab == "expenses" ? fetchExpense() : fetchIncome();
+                    }}>
                     Apply Filters
                   </button>
                 </div>
@@ -416,7 +462,17 @@ export default function CropDetails() {
             </div>
           )}
         </div>
+        <Pagination
+          currentPage={
+            activeTab == "expenses" ? currentPageOfExpense : currentPageOfIncome
+          }
+          totalPages={
+            activeTab == "expenses" ? totalPageOfExpense : totalPageOfIncome
+          }
+          handlePageChange={handlePageChange}
+        />
       </div>
+
       {deleteState.showPopup && (
         <DeletePopup
           setDeletePopup={() => setDeleteState({ id: "", showPopup: false })}

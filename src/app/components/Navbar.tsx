@@ -64,7 +64,7 @@ const Navbar = () => {
                     Add Crop
                   </Link>
                   <button
-                    className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    className="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer text-left"
                     onClick={() => {
                       setShowPopup(true);
                     }}>

@@ -30,13 +30,14 @@ export const register = async (body = {}): Promise<Response> => {
 export const getCrops = async (
   fromDate: string,
   toDate: string,
+  currentPage = 1,
   cropId?: string
-): Promise<CropsResponse[]> => {
+): Promise<CropsResponse> => {
   try {
-    let url = `/crops?fromDate=${fromDate}&toDate=${toDate}`;
+    let url = `/crops?fromDate=${fromDate}&toDate=${toDate}&pageNumber=${currentPage}`;
     if (cropId) url += `&cropId=${cropId}`;
     const res = await apiClient.get(url);
-    return res.data as CropsResponse[];
+    return res.data as CropsResponse;
   } catch (error) {
     throw error;
   }
@@ -63,13 +64,14 @@ export const deleteCrop = async (id: string): Promise<Response> => {
 export const getExpenses = async (
   id: string,
   fromDate?: string,
-  toDate?: string
-): Promise<ExpenseResponse[]> => {
+  toDate?: string,
+  currentPage = 1
+): Promise<ExpenseResponse> => {
   try {
-    let url = `/expenses/${id}`;
-    if (fromDate && toDate) url += `?fromDate=${fromDate}&toDate=${toDate}`;
+    let url = `/expenses/${id}?pageNumber=${currentPage}`;
+    if (fromDate && toDate) url += `&fromDate=${fromDate}&toDate=${toDate}`;
     const res = await apiClient.get(url);
-    return res.data as ExpenseResponse[];
+    return res.data as ExpenseResponse;
   } catch (error) {
     throw error;
   }
@@ -96,13 +98,14 @@ export const postExpense = async (body: PostExpense): Promise<Response> => {
 export const getIncomes = async (
   id: string,
   fromDate?: string,
-  toDate?: string
-): Promise<IncomeResponse[]> => {
+  toDate?: string,
+  currentPage = 1
+): Promise<IncomeResponse> => {
   try {
-    let url = `/incomes/${id}`;
-    if (fromDate && toDate) url += `?fromDate=${fromDate}&toDate=${toDate}`;
+    let url = `/incomes/${id}?pageNumber=${currentPage}`;
+    if (fromDate && toDate) url += `&fromDate=${fromDate}&toDate=${toDate}`;
     const res = await apiClient.get(url);
-    return res.data as IncomeResponse[];
+    return res.data as IncomeResponse;
   } catch (error) {
     throw error;
   }

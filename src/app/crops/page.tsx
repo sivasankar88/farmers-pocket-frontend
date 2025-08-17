@@ -1,15 +1,16 @@
 "use client";
-import { ChevronLeft, ChevronRight, Filter, Trash2 } from "lucide-react";
+import { Filter, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { CropsResponse } from "../type/types";
+import { CropsData, CropsResponse } from "../type/types";
 import { deleteCrop, getCrops } from "../services/apiMethod";
 import { useRouter } from "next/navigation";
 import DeletePopup from "../components/DeletePopup";
 import { AxiosError } from "axios";
+import Pagination from "../components/Pagination";
 const Crop = () => {
   const [showFilter, setShowFilter] = useState(false);
-  const [crops, setCrops] = useState<CropsResponse[]>([]);
+  const [crops, setCrops] = useState<CropsData[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteState, setDeleteState] = useState({
     id: "",
@@ -30,12 +31,13 @@ const Crop = () => {
   });
   useEffect(() => {
     fetchCrops();
-  }, []);
+  }, [currentPage]);
   const fetchCrops = () => {
-    getCrops(filters.fromDate, filters.toDate).then((response) => {
-      setCrops(response);
+    setLoading(true);
+    getCrops(filters.fromDate, filters.toDate, currentPage).then((response) => {
+      setCrops(response.data);
       setLoading(false);
-      setTotalPages(Math.ceil(response.length / 5));
+      setTotalPages(response.totalPages);
     });
   };
   const handleCropDelete = () => {
@@ -61,7 +63,6 @@ const Crop = () => {
     setCurrentPage(page);
   };
 
-  const paginatedCrops = crops.slice((currentPage - 1) * 5, currentPage * 5);
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
@@ -161,7 +162,7 @@ const Crop = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 ">
-                    {paginatedCrops.map((crop) => (
+                    {crops.map((crop) => (
                       <tr key={crop.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           {crop.name}
@@ -212,26 +213,11 @@ const Crop = () => {
               </div>
             )}
           </div>
-          {totalPages > 1 && (
-            <div className="flex justify-end  mt-6">
-              <nav className="flex items-center gap-1">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage == 1}
-                  className="p-2 rounded-md text-green-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                  <ChevronLeft size={20} />
-                </button>
-                <span className="font-bold">{currentPage}</span> of{" "}
-                <span className="font-bold">{totalPages}</span>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="p-2 rounded-md text-green-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                  <ChevronRight size={20} />
-                </button>
-              </nav>
-            </div>
-          )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
           {deleteState.showPopup && (
             <DeletePopup
               setDeletePopup={() =>

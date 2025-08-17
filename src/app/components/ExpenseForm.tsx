@@ -14,7 +14,7 @@ const expenseTypes = [
   "pesticide",
   "irrigation",
   "harvesting",
-  "labor",
+  "labour",
   "others",
 ];
 
