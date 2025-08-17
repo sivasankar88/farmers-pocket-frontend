@@ -53,7 +53,7 @@ export default function CropDetails() {
   useEffect(() => {
     setLoading(true);
     fetchCrops();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (activeTab == "expenses") fetchExpense();
@@ -313,7 +313,9 @@ export default function CropDetails() {
                     className="btn btn-primary"
                     onClick={() => {
                       fetchCrops();
-                      activeTab == "expenses" ? fetchExpense() : fetchIncome();
+                      activeTab == "expenses"
+                        ? setCurrentPageForExpense(1)
+                        : setCurrentPageForIncome(1);
                     }}>
                     Apply Filters
                   </button>

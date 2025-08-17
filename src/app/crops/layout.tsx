@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       console.log(error);
       router.push("/");
     }
-  }, []);
+  }, [router]);
   if (isValid) {
     return (
       <div className="h-screen flex flex-col">

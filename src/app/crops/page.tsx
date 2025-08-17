@@ -114,7 +114,9 @@ const Crop = () => {
               </div>
             </div>
             <div className="flex md:h-10">
-              <button className="btn btn-primary" onClick={fetchCrops}>
+              <button
+                className="btn btn-primary"
+                onClick={() => setCurrentPage(1)}>
                 Apply Filters
               </button>
             </div>
