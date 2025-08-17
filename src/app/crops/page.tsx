@@ -2,7 +2,7 @@
 import { Filter, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { CropsData, CropsResponse } from "../type/types";
+import { CropsData } from "../type/types";
 import { deleteCrop, getCrops } from "../services/apiMethod";
 import { useRouter } from "next/navigation";
 import DeletePopup from "../components/DeletePopup";

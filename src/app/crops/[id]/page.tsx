@@ -313,9 +313,8 @@ export default function CropDetails() {
                     className="btn btn-primary"
                     onClick={() => {
                       fetchCrops();
-                      activeTab == "expenses"
-                        ? setCurrentPageForExpense(1)
-                        : setCurrentPageForIncome(1);
+                      if (activeTab == "expenses") setCurrentPageForExpense(1);
+                      else setCurrentPageForIncome(1);
                     }}>
                     Apply Filters
                   </button>
