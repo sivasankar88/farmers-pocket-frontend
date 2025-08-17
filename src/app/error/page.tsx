@@ -1,23 +1,22 @@
-import React from "react";
-export default function ErrorPage({
-  searchParams,
-}: {
-  searchParams: { code?: string };
-}) {
-  const statusCode = searchParams.code;
+interface ErrorPageProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
 
+export default function ErrorPage({ searchParams }: ErrorPageProps) {
+  let code = searchParams.code as string | 500;
   let title = "Something went wrong";
   let description = "An unexpected error occurred. Please try again later.";
-  let code = "500";
 
-  if (statusCode === "ECONNABORTED") {
+  if (code === "ECONNABORTED") {
     title = "Request Timed Out";
     description = "The server is taking too long to respond. Please try again.";
     code = "408";
-  } else if (statusCode === "429") {
+  } else if (code === "429") {
     title = "Too Many Requests";
     description = "You’ve hit the rate limit. Please wait and try again.";
     code = "429";
+  } else if (code === "500") {
+    code = "500";
   }
 
   return (
