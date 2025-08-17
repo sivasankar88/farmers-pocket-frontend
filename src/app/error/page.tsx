@@ -1,10 +1,10 @@
-"use client";
 import React from "react";
-import { useSearchParams } from "next/navigation";
-
-export default function ErrorPage() {
-  const params = useSearchParams();
-  const statusCode = params.get("code");
+export default function ErrorPage({
+  searchParams,
+}: {
+  searchParams: { code?: string };
+}) {
+  const statusCode = searchParams.code;
 
   let title = "Something went wrong";
   let description = "An unexpected error occurred. Please try again later.";
