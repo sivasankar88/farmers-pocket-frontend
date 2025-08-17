@@ -4,6 +4,10 @@ This is the frontend of the **Farmer's Pocket System** built with **Next.js**. I
 
 ---
 
+You can explore the available endpoints here:  
+➡️ **[Swagger UI - Farmer's Pocket API](https://farmesr-s-pocket-backend.onrender.com/api-docs/#/)**
+
+
 ## ✨ Features
 
 - 👤 Farmer registration and login
