@@ -32,7 +32,6 @@ export default function CropDetails() {
   const cropId = String(params.id);
   const [expenses, setExpenses] = useState<ExpenseData[]>([]);
   const [incomes, setIncomes] = useState<IncomeData[]>([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("expenses");
   const [currentPageOfExpense, setCurrentPageForExpense] = useState(1);
   const [totalPageOfExpense, setTotalPageForExpense] = useState(1);
@@ -51,7 +50,6 @@ export default function CropDetails() {
     showPopup: false,
   });
   useEffect(() => {
-    setLoading(true);
     fetchCrops();
   }, [router]);
 
@@ -67,7 +65,6 @@ export default function CropDetails() {
   };
 
   const fetchExpense = () => {
-    setLoading(true);
     getExpenses(
       cropId,
       filters.fromDate,
@@ -76,12 +73,10 @@ export default function CropDetails() {
     ).then((response) => {
       setExpenses(response.data);
       setTotalPageForExpense(response.totalPages);
-      setLoading(false);
     });
   };
 
   const fetchIncome = () => {
-    setLoading(false);
     getIncomes(
       cropId,
       filters.fromDate,
@@ -90,7 +85,6 @@ export default function CropDetails() {
     ).then((response) => {
       setIncomes(response.data);
       setTotalPageForIncome(response.totalPages);
-      setLoading(false);
     });
   };
 
@@ -155,18 +149,6 @@ export default function CropDetails() {
       setShowForm(false);
     });
   };
-
-  if (loading) {
-    return (
-      <div>
-        <div className="container mx-auto px-4 py-8">
-          <div className="card p-12 flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -313,8 +295,15 @@ export default function CropDetails() {
                     className="btn btn-primary"
                     onClick={() => {
                       fetchCrops();
-                      if (activeTab == "expenses") setCurrentPageForExpense(1);
-                      else setCurrentPageForIncome(1);
+                      if (activeTab == "expenses") {
+                        currentPageOfExpense == 1
+                          ? fetchExpense()
+                          : setCurrentPageForExpense(1);
+                      } else {
+                        currentPageOfIncome == 1
+                          ? fetchIncome()
+                          : setCurrentPageForIncome(1);
+                      }
                     }}>
                     Apply Filters
                   </button>

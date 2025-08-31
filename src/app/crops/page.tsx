@@ -1,7 +1,7 @@
 "use client";
 import { Filter, Trash2 } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CropsData } from "../type/types";
 import { deleteCrop, getCrops } from "../services/apiMethod";
 import { useRouter } from "next/navigation";
@@ -58,10 +58,14 @@ const Crop = () => {
       [name]: value,
     }));
   };
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      if (page < 1 || page > totalPages) return;
+      setCurrentPage(page);
+    },
+    [totalPages]
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -116,7 +120,9 @@ const Crop = () => {
             <div className="flex md:h-10">
               <button
                 className="btn btn-primary"
-                onClick={() => setCurrentPage(1)}>
+                onClick={() => {
+                  currentPage == 1 ? fetchCrops() : setCurrentPage(1);
+                }}>
                 Apply Filters
               </button>
             </div>
