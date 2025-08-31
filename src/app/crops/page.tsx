@@ -121,7 +121,8 @@ const Crop = () => {
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  currentPage == 1 ? fetchCrops() : setCurrentPage(1);
+                  if (currentPage == 1) fetchCrops();
+                  else setCurrentPage(1);
                 }}>
                 Apply Filters
               </button>

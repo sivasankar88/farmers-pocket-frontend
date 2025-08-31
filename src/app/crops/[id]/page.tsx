@@ -296,13 +296,11 @@ export default function CropDetails() {
                     onClick={() => {
                       fetchCrops();
                       if (activeTab == "expenses") {
-                        currentPageOfExpense == 1
-                          ? fetchExpense()
-                          : setCurrentPageForExpense(1);
+                        if (currentPageOfExpense == 1) fetchExpense();
+                        else setCurrentPageForExpense(1);
                       } else {
-                        currentPageOfIncome == 1
-                          ? fetchIncome()
-                          : setCurrentPageForIncome(1);
+                        if (currentPageOfIncome == 1) fetchIncome();
+                        else setCurrentPageForIncome(1);
                       }
                     }}>
                     Apply Filters
