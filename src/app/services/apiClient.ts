@@ -1,5 +1,7 @@
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 import Router from "next/router";
+
+const controllerMap = new Map<string, AbortController>();
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
@@ -9,7 +11,14 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(
-  (config) => {
+  (config: InternalAxiosRequestConfig) => {
+    const fullUrl = new URL(config.url!, config.baseURL).pathname;
+    if (controllerMap.has(fullUrl)) {
+      controllerMap.get(fullUrl)!.abort();
+    }
+    const controller = new AbortController();
+    controllerMap.set(fullUrl, controller);
+    config.signal = controller.signal;
     const token = localStorage.getItem("sessionAuthToken");
     if (token) {
       config.headers.sessionauth = `Bearer ${token}`;
@@ -22,6 +31,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    if (axios.isCancel(error) || error.code === "ERR_CANCELED") {
+      window.location.href = "/error?code=ECONNABORTED";
+    }
     const originalRequest = error.config;
     if (typeof window != undefined) {
       if (error.status === 401) {
@@ -40,13 +52,10 @@ apiClient.interceptors.response.use(
       }
     }
     if (error.code === "ECONNABORTED") {
-      //Time limit
       window.location.href = "/error?code=ECONNABORTED";
     } else if (error.response?.status === 429) {
-      // Rate limit
       window.location.href = "/error?code=429";
     } else if (error.response?.status >= 500) {
-      // Server error
       window.location.href = "/error?code=500";
     }
 
