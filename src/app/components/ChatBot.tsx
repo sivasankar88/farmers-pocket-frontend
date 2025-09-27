@@ -41,7 +41,7 @@ const ChatBot = () => {
     sessionStorage.setItem("farmersPocketChats", JSON.stringify(chats));
   }, [chats]);
   return (
-    <div className="card fixed bottom-10 right-20 w-96 h-[500px] rounded border-2 border-green-700 shadow-lg flex flex-col">
+    <div className="card !p-1 !lg:p-2 fixed bottom-10 right-20 w-70 lg:w-96 h-[70%] lg:h-[500px] rounded border-2 border-green-700 shadow-lg flex flex-col">
       <div className="bg-green-700 text-white p-2 rounded-t font-semibold text-center">
         Farmer&apos;s Chat Bot
       </div>

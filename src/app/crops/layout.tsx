@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react"; // ⬅️ Import useRef
 import Navbar from "../components/Navbar";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
@@ -10,10 +10,13 @@ import ChatBot from "../components/ChatBot";
 interface JWTPayload {
   exp: number;
 }
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [isValid, setIsValid] = useState(false);
   const [showChatBot, setShowChatBot] = useState(false);
+  const chatBotRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const token = localStorage.getItem(SESSION_AUTH_TOKEN);
     if (!token) {
@@ -39,6 +42,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       router.push("/");
     }
   }, [router]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        chatBotRef.current &&
+        !chatBotRef.current.contains(event.target as Node)
+      ) {
+        setShowChatBot(false);
+      }
+    }
+
+    if (showChatBot) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showChatBot]);
+
   if (isValid) {
     return (
       <div className="h-screen flex flex-col">
@@ -51,13 +74,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   [&::-webkit-scrollbar-thumb]:bg-gray-300 my-16">
           {children}
         </main>
-        <div
-          className="fixed bottom-5 right-5 z-50 rounded-3xl p-3 bg-green-500 cursor-pointer shadow-lg"
-          onClick={() => setShowChatBot(!showChatBot)}>
-          <Bot />
+
+        <div ref={chatBotRef}>
+          <div
+            className="fixed bottom-5 right-5 z-50 rounded-3xl p-3 bg-green-500 cursor-pointer shadow-lg"
+            onClick={() => setShowChatBot(!showChatBot)}>
+            <Bot />
+          </div>
+          {showChatBot && <ChatBot />}
         </div>
-        {showChatBot && <ChatBot />}
       </div>
     );
   }
+  return null;
 }
