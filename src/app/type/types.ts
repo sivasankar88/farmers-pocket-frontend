@@ -67,3 +67,8 @@ export interface PostIncome {
   date: string;
   notes: string;
 }
+
+export interface Chats {
+  type: string;
+  text: string;
+}

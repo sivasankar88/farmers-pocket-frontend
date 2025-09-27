@@ -128,3 +128,12 @@ export const postIncome = async (body: PostIncome): Promise<Response> => {
     throw error;
   }
 };
+
+export const postChats = async (body = {}): Promise<Response> => {
+  try {
+    const res = await apiClient.post("/chat/", body);
+    return res.data as Response;
+  } catch (error) {
+    throw error;
+  }
+};
