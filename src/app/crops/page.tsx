@@ -42,7 +42,7 @@ const Crop = () => {
   };
   const handleCropDelete = () => {
     deleteCrop(deleteState.id)
-      .then((response) => {
+      .then(() => {
         fetchCrops();
       })
       .catch((error: AxiosError) => {

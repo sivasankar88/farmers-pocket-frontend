@@ -108,7 +108,7 @@ export default function CropDetails() {
 
   const handleDeleteExpense = async (id: string) => {
     deleteExpense(id)
-      .then((response) => {
+      .then(() => {
         fetchCrops();
         fetchExpense();
       })
@@ -120,7 +120,7 @@ export default function CropDetails() {
 
   const handleDeleteIncome = async (id: string) => {
     deleteIncome(id)
-      .then((response) => {
+      .then(() => {
         fetchCrops();
         fetchIncome();
       })
@@ -131,7 +131,7 @@ export default function CropDetails() {
   };
 
   const handleAddExpense = (newExpense: PostExpense) => {
-    postExpense(newExpense).then((response) => {
+    postExpense(newExpense).then(() => {
       fetchCrops();
       fetchExpense();
       setShowForm(false);
@@ -139,7 +139,7 @@ export default function CropDetails() {
   };
 
   const handleAddIncome = (newIncome: PostIncome) => {
-    postIncome(newIncome).then((response) => {
+    postIncome(newIncome).then(() => {
       fetchCrops();
       fetchIncome();
       setShowForm(false);
