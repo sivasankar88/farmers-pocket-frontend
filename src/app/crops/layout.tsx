@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { SESSION_AUTH_TOKEN } from "../utils/constants";
 import { Bot } from "lucide-react";
 import ChatBot from "../components/ChatBot";
+import useIdleTimer from "../hooks/useIdleTimer";
+import SessionTimeoutPopup from "../components/SessionTimeoutPopup";
 
 interface JWTPayload {
   exp: number;
@@ -16,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isValid, setIsValid] = useState(false);
   const [showChatBot, setShowChatBot] = useState(false);
   const chatBotRef = useRef<HTMLDivElement>(null);
-
+  const isIdle = useIdleTimer();
   useEffect(() => {
     const token = localStorage.getItem(SESSION_AUTH_TOKEN);
     if (!token) {
@@ -61,7 +63,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showChatBot]);
-
+  useEffect(() => {
+    console.log(isIdle);
+  }, [isIdle]);
   if (isValid) {
     return (
       <div className="h-screen flex flex-col">
@@ -83,6 +87,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
           {showChatBot && <ChatBot />}
         </div>
+        {isIdle && <SessionTimeoutPopup />}
       </div>
     );
   }
