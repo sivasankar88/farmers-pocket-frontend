@@ -115,7 +115,7 @@ const Register = () => {
       <div className="hidden md:flex md:w-1/2 bg-green-50 items-center justify-center p-10">
         <div className="max-w-md">
           <Image
-            src="/farmer.jpeg"
+            src="/farming.jpg"
             alt="Farming Tractor"
             width={500}
             height={400}
