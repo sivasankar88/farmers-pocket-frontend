@@ -31,9 +31,6 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (axios.isCancel(error) || error.code === "ERR_CANCELED") {
-      window.location.href = "/error?code=ECONNABORTED";
-    }
     const originalRequest = error.config;
     if (typeof window != undefined) {
       if (error.status === 401) {
